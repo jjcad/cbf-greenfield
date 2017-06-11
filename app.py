@@ -66,8 +66,8 @@ if __name__ == '__main__':
             os.environ.get('CONVERSATION_USERNAME'),
             os.environ.get('CONVERSATION_PASSWORD'),
             os.environ.get('CONVERSATION_WORKSPACE_ID'),
-            os.environ.get('FOURSQUARE_CLIENT_ID'),
-            os.environ.get('FOURSQUARE_CLIENT_SECRET')
+            os.environ.get('VISUAL_RECOGNITION_KEY'),
+            os.environ.get('WEATHER_API_KEY')
         )
         healthBot.init()
         # Start Slackbot Controller

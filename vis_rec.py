@@ -4,7 +4,7 @@ from watson_developer_cloud import VisualRecognitionV3
 
 class PlantWhisperer():
 
-    def __init__(self, visual_recognition_key, image):
+    def __init__(self, visual_recognition_key):
         """
         Creates a new instance of HealthBot.
         Parameters

@@ -5,10 +5,14 @@ import threading
 
 from foursquare import Foursquare
 from watson_developer_cloud import ConversationV1
+from vis_rec import PlantWhisperer
+from weather import Weather
 
 class HealthBot():
 
-    def __init__(self, user_store, dialog_store, conversation_username, conversation_password, conversation_workspace_id, foursquare_client_id, foursquare_client_secret):
+    def __init__(self, user_store, dialog_store,
+                 conversation_username, conversation_password, conversation_workspace_id,
+                 visual_recognizer_key, weather_api_key):
         """
         Creates a new instance of HealthBot.
         Parameters
@@ -18,8 +22,8 @@ class HealthBot():
         conversation_username - The Watson Conversation username
         conversation_password - The Watson Converation password
         conversation_workspace_id - The Watson Conversation workspace ID
-        foursquare_client_id - The Foursquare Client ID
-        foursquare_client_secret - The Foursquare Client Secret
+        visual_recognizer_key - The API key for the visual recognition api
+        weather_key - The API key for Weather api
         """
         self.user_store = user_store
         self.dialog_store = dialog_store
@@ -29,10 +33,10 @@ class HealthBot():
             version='2016-07-11'
         )
         self.conversation_workspace_id = conversation_workspace_id
-        if foursquare_client_id is not None and foursquare_client_secret is not None:
-            self.foursquare_client = Foursquare(client_id=foursquare_client_id, client_secret=foursquare_client_secret)
-        else:
-            self.foursquare_client = None
+
+        self.plant_health_client = PlantWhisperer(visual_recognizer_key)
+        self.weather_client = Weather(weather_api_key)
+
     
     def init(self):
         """
@@ -53,10 +57,11 @@ class HealthBot():
         try:
             user = self.get_or_create_user(message_sender)
 ## Update context to deal with things correctly
-if 
+
 
 ## Back to normal flow. Maybe
-            conversation_response = self.send_request_to_watson_conversation(message, user['conversation_context'])
+            conversation_response = self.send_request_to_watson_conversation(
+                message['content'], user['conversation_context'])
             reply = self.handle_response_from_watson_conversation(message, user, conversation_response)
             self.update_user_with_watson_conversation_context(user, conversation_response['context'])
             return {'conversation_response': conversation_response, 'text': reply}
@@ -76,8 +81,10 @@ if
         elif message['type'] == 'image':
 # Send to visual recognizer
 # return conext and text message based on that
+            plantHealth = self.plant_health_client.is_plant_healthy(message['content'])
+            context['plantHealth'] = plantHealth
+            return context, None
 
-        {'type': 'text', 'content': output['text'].lower()}
 
     def send_request_to_watson_conversation(self, message, conversation_context):
         """
@@ -93,6 +100,7 @@ if
             message_input={'text': message},
             context=conversation_context
         )
+
 
     def handle_response_from_watson_conversation(self, message, user, conversation_response):
         """ 
@@ -116,14 +124,15 @@ if
         # For example, we'll lookup and return a list of doctors when the action = findDoctorByLocation (handle_find_doctor_by_location_message). 
         # In other cases we'll just return the response configured in the Watson Conversation dialog (handle_default_message).
         action = None
-        if 'action' in conversation_response['context'].keys():
+        if 'action' in conversation_response['context']:
             action = conversation_response['context']['action']
             # Variables in the context stay in there until we clear them or overwrite them, and we don't want
             # to process the wrong action if we forget to overwrite it, so here we clear the action in the context
             conversation_response['context']['action'] = None
         
         # Process the action
-        if action == "findDoctorByLocation":
+        if 'location' in conversation_response['context']:
+            pass
             reply = self.handle_find_doctor_by_location_message(conversation_response)
         else:
             reply = self.handle_default_message(conversation_response)
