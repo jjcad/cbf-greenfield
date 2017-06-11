@@ -1,13 +1,8 @@
-import csv
-import datetime
 import json
 import os
-import shutil
-import time
 from datetime import timedelta, date
 # module to convert an address into latitude and longitude values
 from geopy.geocoders import Nominatim
-import pandas as pd
 import requests
 
 def select_keys(d, ks):
@@ -16,11 +11,11 @@ def select_keys(d, ks):
 class Weather(object):
     """API for getting the weather at a spacetime point"""
 
-    def __init__(self):
+    def __init__(self, apikey, debug=False):
         super(Weather, self).__init__()
-        self.debug = os.environ.get('DEBUG', False)
-        self.apikey = os.environ.get('WEATHER_API_KEY')
         self.geolocator = Nominatim()
+        self.apikey = apikey
+        self.debug = debug
 
     def _address_to_latlon(self, address):
         location = self.geolocator.geocode(address)
@@ -84,7 +79,9 @@ def main():
         address = sys.argv[1]
     else:
         address = '1644 Platte St, Denver, CO'
-    weather = Weather()
+    debug = os.environ.get('DEBUG', False)
+    apikey = os.environ.get('WEATHER_API_KEY')
+    weather = Weather(apikey, debug)
     # lat, lon = weather._address_to_latlon(address)
     # forecast = weather.weather_forecast(lat, lon)
     # data = weather.parse_forecast(forecast)
