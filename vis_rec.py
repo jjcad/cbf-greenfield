@@ -1,6 +1,3 @@
-import json
-import sys
-import threading
 import os
 
 from watson_developer_cloud import VisualRecognitionV3
@@ -12,8 +9,6 @@ class PlantWhisperer():
         Creates a new instance of HealthBot.
         Parameters
         ----------
-        user_store - Instance of CloudantUserStore used to store and retrieve users from Cloudant
-        dialog_store - Instance of CloudantDialogStore used to store conversation history
         visual_recognition_key - The Watson Visual Recognition API Key
         visual_recognition_url - The Watson Visual Recognition API Endpoint
         """
