@@ -10,7 +10,7 @@ class PlantWhisperer():
         Parameters
         ----------
         visual_recognition_key - The Watson Visual Recognition API Key
-        visual_recognition_url - The Watson Visual Recognition API Endpoint
+        image - The file path of the file to be classified.
         """
         #self.user_store = user_store
         #self.dialog_store = dialog_store
