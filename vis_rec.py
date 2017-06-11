@@ -1,12 +1,13 @@
 import json
 import sys
 import threading
+import os
 
 from watson_developer_cloud import VisualRecognitionV3
 
 class PlantWhisperer():
 
-    def __init__(self, visual_recognition_key, visual_recognition_url, image):
+    def __init__(self, visual_recognition_key, image):
         """
         Creates a new instance of HealthBot.
         Parameters
@@ -22,20 +23,17 @@ class PlantWhisperer():
             api_key=visual_recognition_key,
             version='2016-05-20'
         )
-        self.image = image
-
-    def init(self):
-        """
-        Initializes the bot, including the required datastores.
-        """
-        #self.user_store.init()
-        #self.dialog_store.init()
+        self.image = os.path.abspath(image)
 
     def send_image_to_be_classified(self):
         """
         Sends the image to the classifier.
         """
-        return self.visual_recognition_client.classify(
-            images_file=self.image,
-            classifier_ids='plant'
-        )
+        with open(self.image, 'rb') as f:
+            output=self.visual_recognition_client.classify(
+                images_file=f,
+                classifier_ids=['plant_1358867931'],
+                threshold=0.0001
+            )
+
+        return output
