@@ -32,3 +32,15 @@ class PlantWhisperer():
             )
 
         return output
+
+    def is_plant_healthy(self):
+        """
+        Returns the class with the highest score.
+        """
+        obj = self.send_image_to_be_classified()
+        classes = obj['images'][0]['classifiers'][0]['classes']
+        l = [(x['class'], x['score']) for x in classes]
+        l.sort(key=lambda x: -x[1])
+        winner = l[0]
+        
+        return(winner[0])
