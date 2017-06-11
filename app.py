@@ -1,15 +1,16 @@
+import os
 
-from cloudant_dialog_store import CloudantDialogStore
-from cloudant_user_store import CloudantUserStore
 from dotenv import load_dotenv
 from flask import Flask, render_template, send_from_directory
 from flask_sockets import Sockets
 from gevent import pywsgi
 from geventwebsocket.handler import WebSocketHandler
+
+from cloudant_dialog_store import CloudantDialogStore
+from cloudant_user_store import CloudantUserStore
 from health_bot import HealthBot
 from slack_bot_controller import SlackBotController
 from web_socket_bot_controller import WebSocketBotController
-import os
 
 class CustomFlask(Flask):
     jinja_options = Flask.jinja_options.copy()

@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import threading
 import time
 from slackclient import SlackClient
@@ -18,8 +20,11 @@ class SlackBotController(threading.Thread):
 			while self.running:
 				slack_output = self.slack_client.rtm_read()
 				message, message_sender, channel = self.parse_slack_output(slack_output)
+                                if True: #message:
+                                    print(message, message_sender, channel)
 				if message and channel and channel[0] == 'D':
 					reply = self.health_bot.process_message(message_sender, message)
+                                        print(reply)
 					self.post_to_slack(reply['text'], channel)
 				time.sleep(0.1)
 		else:
