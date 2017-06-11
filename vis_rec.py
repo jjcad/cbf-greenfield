@@ -18,18 +18,12 @@ class PlantWhisperer():
             api_key=visual_recognition_key,
             version='2016-05-20'
         )
-        if os.path.isfile(image):
-            self.image = os.path.abspath(image)
-            self.isFile = True
-        else:
-            self.image = image
-            self.isFile = False
 
-    def send_imageFile_to_be_classified(self):
+    def send_imageFile_to_be_classified(self, image):
         """
         Sends the image to the classifier.
         """
-        with open(self.image, 'rb') as f:
+        with open(image, 'rb') as f:
             output=self.visual_recognition_client.classify(
                 images_file=f,
                 classifier_ids=['plant_1358867931'],
@@ -38,27 +32,27 @@ class PlantWhisperer():
 
         return output
 
-    def send_imageUrl_to_be_classified(self):
+    def send_imageUrl_to_be_classified(self, image):
         """
         Sends the image to the classifier.
         """
-        with open(self.image, 'rb') as f:
-            output=self.visual_recognition_client.classify(
-                images_url=f,
-                classifier_ids=['plant_1358867931'],
-                threshold=0.0001
-            )
+        output = self.visual_recognition_client.classify(
+            images_url=image,
+            classifier_ids=['plant_1358867931'],
+            threshold=0.0001
+        )
 
         return output
 
-    def is_plant_healthy(self):
+    def is_plant_healthy(self, image):
         """
         Returns the class with the highest score.
         """
-        if self.isFile:
-            obj = self.send_imageFile_to_be_classified()
+        if os.path.isfile(image):
+            image = os.path.abspath(image)
+            obj = self.send_imageFile_to_be_classified(image)
         else:
-            obj = self.send_imageUrl_to_be_classified()
+            obj = self.send_imageUrl_to_be_classified(image)
 
         classes = obj['images'][0]['classifiers'][0]['classes']
         l = [(x['class'], x['score']) for x in classes]

@@ -52,6 +52,10 @@ class HealthBot():
         conversation_response = None
         try:
             user = self.get_or_create_user(message_sender)
+## Update context to deal with things correctly
+if 
+
+## Back to normal flow. Maybe
             conversation_response = self.send_request_to_watson_conversation(message, user['conversation_context'])
             reply = self.handle_response_from_watson_conversation(message, user, conversation_response)
             self.update_user_with_watson_conversation_context(user, conversation_response['context'])
@@ -61,6 +65,19 @@ class HealthBot():
             # clear state and set response
             reply = "Sorry, something went wrong!"
             return {'conversation_response': conversation_response, 'text': reply}
+
+    def update_request_context(self, context, message):
+        """
+        Update the request context BEFORE sending it to Watson Conversation
+        """
+        if message['type'] == 'text':
+            # return context and text message
+            return context, message['content']
+        elif message['type'] == 'image':
+# Send to visual recognizer
+# return conext and text message based on that
+
+        {'type': 'text', 'content': output['text'].lower()}
 
     def send_request_to_watson_conversation(self, message, conversation_context):
         """
