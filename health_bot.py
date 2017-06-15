@@ -130,11 +130,13 @@ class HealthBot():
             # to process the wrong action if we forget to overwrite it, so here we clear the action in the context
             conversation_response['context']['action'] = None
         
+
         # Process the action
-        if 'location' in conversation_response['context']:
-            pass
-            reply = self.handle_find_doctor_by_location_message(conversation_response)
+        if action == 'foundLocation':
+            reply = 'Got location.'
+            #reply = self.handle_find_doctor_by_location_message(conversation_response)
         else:
+            #reply = 'Stock reply.'
             reply = self.handle_default_message(conversation_response)
 
         # Finally, we log every action performed as part of the active conversation
